@@ -3,13 +3,17 @@ import json
 
 class Response:
     def __init__(self):
+        self.stat = "200 OK"
+        self.head
         pass
 
     def set_status(self, code, text):
-        pass
+        self.stat = code + ' ' + text
+        return self
 
     def headers(self, headers):
-        pass
+        self.head.update(headers)
+        return self
 
     def cookies(self, cookies):
         pass
