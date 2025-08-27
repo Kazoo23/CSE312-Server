@@ -2,13 +2,28 @@ class Request:
 
     def __init__(self, request: bytes):
         # TODO: parse the bytes of the request and populate the following instance variables
-
-        self.body = b""
-        self.method = ""
-        self.path = ""
-        self.http_version = ""
-        self.headers = {}
+        request = request.split(b'\r\n\r\n')
+        self.body = request[1]
+        request = request[0].decode().split('\r\n')
+        requestLine = request.pop(0).split(' ')
+        self.method = requestLine[0]
+        self.path = requestLine[1]
+        self.http_version = requestLine[2]
         self.cookies = {}
+        self.headers = {}
+        for i in request:
+            head = i[:i.find(':')]
+            tail = i[i.find(':')+1:].strip()
+            self.headers[head] = tail
+        if "Cookie" in self.headers:
+            cookies = self.headers["Cookie"].split(";")
+            for i in cookies:
+                head = i[:i.find('=')]
+                tail = i[i.find('=')+1:].strip()
+                self.cookies[head] = tail
+
+
+
 
 
 def test1():
@@ -22,7 +37,17 @@ def test1():
     # This is the start of a simple way (ie. no external libraries) to test your code.
     # It's recommended that you complete this test and add others, including at least one
     # test using a POST request. Also, ensure that the types of all values are correct
-
+def test2():
+    request = Request(b'GET /sample_page.html HTTP/2.0\r\nHost: www.google.com\r\nCookie: cookie1=chocolate; cookie2=strawberry\r\n\r\nHello World!')
+    '''
+    print(request.method)
+    print(request.path)
+    print(request.http_version)
+    print(request.headers)
+    print(request.cookies)
+    print(request.body)
+    '''
 
 if __name__ == '__main__':
     test1()
+    test2()
