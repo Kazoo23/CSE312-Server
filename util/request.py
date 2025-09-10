@@ -3,7 +3,7 @@ class Request:
     def __init__(self, request: bytes):
         # TODO: parse the bytes of the request and populate the following instance variables
         request = request.split(b'\r\n\r\n')
-        if not request[1]:
+        if request.__sizeof__() == 1:
             self.body = b''
         else:
             self.body = request[1]

@@ -43,7 +43,8 @@ class Response:
             res += b'\r\n' + i.encode() + b': ' + self.head[i].encode()
         for cook in self.cook:
             res += b'\r\nSet-Cookie: ' + cook.encode() + b'=' + self.cook[cook].encode()
-        res += b'\r\nContent-Length: ' + str(len(self.bdy)).encode()
+        if 'Content-Length' not in self.head:
+            res += b'\r\nContent-Length: ' + str(len(self.bdy)).encode()
         res += b'\r\n\r\n' + self.bdy
         return res
 

@@ -3,25 +3,28 @@ import os
 
 def renderindex(request,handler):
     res = Response()
-    templatefile = open('public\layout\layout.html','rb').read()
-    indexfile = open('public\index.html','rb').read()
-    indexfile = templatefile.replace(b"{{content}}",indexfile)
+    templatefile = open(os.path.join('public','layout','layout.html'), 'r').read()
+    indexfile = open(os.path.join('public','index.html'),'r').read()
+    indexfile = templatefile.replace("{{content}}",indexfile)
     res.headers({'Content-Type' : 'text/html; charset=utf-8'})
+    indexfile = indexfile.encode()
     res.bytes(indexfile)
     handler.request.sendall(res.to_data())
 
 def renderchat(request,handler):
     res = Response()
-    templatefile = open('public\layout\layout.html','rb').read()
-    chatfile = open('public\chat.html','rb').read()
+    templatefile = open(os.path.join('public','layout','layout.html'), 'rb').read()
+    chatfile = open(os.path.join('public','chat.html'),'rb').read()
     chatfile = templatefile.replace(b"{{content}}",chatfile)
-    res.headers({'Content-Type' : 'text/html; charset=utf-8'})
     res.bytes(chatfile)
+    res.headers({'Content-Type' : 'text/html; charset=utf-8'})
     handler.request.sendall(res.to_data())
 
 def renderFile(request,handler):
     res = Response()
-    file = open(request.path[1:],'rb').read()
+    path = request.path.lstrip('/')
+    path = path.split('/')
+    file = open(os.path.join(*path),'rb').read()
     res.bytes(file)
     if '.jpg' in request.path:
         head = {'Content-Type': 'image/jpeg'}
