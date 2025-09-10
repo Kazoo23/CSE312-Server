@@ -3,7 +3,10 @@ class Request:
     def __init__(self, request: bytes):
         # TODO: parse the bytes of the request and populate the following instance variables
         request = request.split(b'\r\n\r\n')
-        self.body = request[1]
+        if not request[1]:
+            self.body = b''
+        else:
+            self.body = request[1]
         request = request[0].decode().split('\r\n')
         requestLine = request.pop(0).split(' ')
         self.method = requestLine[0]
@@ -12,13 +15,13 @@ class Request:
         self.cookies = {}
         self.headers = {}
         for i in request:
-            head = i[:i.find(':')]
+            head = i[:i.find(':')].strip()
             tail = i[i.find(':')+1:].strip()
             self.headers[head] = tail
         if "Cookie" in self.headers:
             cookies = self.headers["Cookie"].split(";")
             for i in cookies:
-                head = i[:i.find('=')]
+                head = i[:i.find('=')].strip()
                 tail = i[i.find('=')+1:].strip()
                 self.cookies[head] = tail
 
@@ -39,14 +42,7 @@ def test1():
     # test using a POST request. Also, ensure that the types of all values are correct
 def test2():
     request = Request(b'GET /sample_page.html HTTP/2.0\r\nHost: www.google.com\r\nCookie: cookie1=chocolate; cookie2=strawberry\r\n\r\nHello World!')
-    '''
-    print(request.method)
-    print(request.path)
-    print(request.http_version)
-    print(request.headers)
-    print(request.cookies)
-    print(request.body)
-    '''
+
 
 if __name__ == '__main__':
     test1()
