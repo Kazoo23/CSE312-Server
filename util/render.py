@@ -3,7 +3,7 @@ import os
 
 def renderindex(request,handler):
     res = Response()
-    templatefile = open('public\\layout\\layout.html','rb').read()
+    templatefile = open('public\layout\layout.html','rb').read()
     indexfile = open('public\index.html','rb').read()
     indexfile = templatefile.replace(b"{{content}}",indexfile)
     res.headers({'Content-Type' : 'text/html; charset=utf-8'})
@@ -12,7 +12,7 @@ def renderindex(request,handler):
 
 def renderchat(request,handler):
     res = Response()
-    templatefile = open('public\\layout\\layout.html','rb').read()
+    templatefile = open('public\layout\layout.html','rb').read()
     chatfile = open('public\chat.html','rb').read()
     chatfile = templatefile.replace(b"{{content}}",chatfile)
     res.headers({'Content-Type' : 'text/html; charset=utf-8'})
