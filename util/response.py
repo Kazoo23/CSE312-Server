@@ -28,6 +28,7 @@ class Response:
 
     def text(self, data):
         self.bdy += data.encode()
+        self.headers({'Content-Type': 'text/plain; charset=utf-8'})
         return self
 
     def json(self, data):

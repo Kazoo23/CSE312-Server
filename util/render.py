@@ -3,11 +3,10 @@ import os
 
 def renderindex(request,handler):
     res = Response()
-    templatefile = open(os.path.join('public','layout','layout.html'), 'r').read()
-    indexfile = open(os.path.join('public','index.html'),'r').read()
-    indexfile = templatefile.replace("{{content}}",indexfile)
+    templatefile = open(os.path.join('public','layout','layout.html'), 'rb').read()
+    indexfile = open(os.path.join('public','index.html'),'rb').read()
+    indexfile = templatefile.replace(b"{{content}}",indexfile)
     res.headers({'Content-Type' : 'text/html; charset=utf-8'})
-    indexfile = indexfile.encode()
     res.bytes(indexfile)
     handler.request.sendall(res.to_data())
 
@@ -31,7 +30,7 @@ def renderFile(request,handler):
     elif '.png' in request.path:
         head = {'Content-Type': 'image/png'}
     elif '.ico' in request.path:
-        head = {'Content-Type': 'image/x-icon'}
+        head = {'Content-Type': 'image/vnd.microsoft.icon'}
     elif '.gif' in request.path:
         head = {'Content-Type': 'image/gif'}
     elif '.webp' in request.path:
@@ -39,9 +38,11 @@ def renderFile(request,handler):
     elif '.html' in request.path:
         head = {'Content-Type': 'text/html; charset=utf-8'}
     elif '.js' in request.path:
-        head = {'Content-Type': 'application/javascript'}
+        head = {'Content-Type': 'text/javascript'}
     elif '.css' in request.path:
         head = {'Content-Type': 'text/css'}
+    elif '.txt' in request.path:
+        head = {'Content-Type': 'text/plain; charset=utf-8'}
     else:
         res.set_status("404","Not Found")
         res.text("Non-known data type")
