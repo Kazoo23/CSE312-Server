@@ -1,26 +1,25 @@
 from util.response import Response
+from util.request import Request
 import os
-
-def renderindex(request,handler):
-    res = Response()
-    templatefile = open(os.path.join('public','layout','layout.html'), 'rb').read()
-    indexfile = open(os.path.join('public','index.html'),'rb').read()
-    indexfile = templatefile.replace(b"{{content}}",indexfile)
-    res.headers({'Content-Type' : 'text/html; charset=utf-8'})
-    res.bytes(indexfile)
-    handler.request.sendall(res.to_data())
-
-def renderchat(request,handler):
-    res = Response()
-    templatefile = open(os.path.join('public','layout','layout.html'), 'rb').read()
-    chatfile = open(os.path.join('public','chat.html'),'rb').read()
-    chatfile = templatefile.replace(b"{{content}}",chatfile)
-    res.bytes(chatfile)
-    res.headers({'Content-Type' : 'text/html; charset=utf-8'})
-    handler.request.sendall(res.to_data())
 
 def renderFile(request,handler):
     res = Response()
+    if(request.path=='/'):
+        templatefile = open(os.path.join('public', 'layout', 'layout.html'), 'rb').read()
+        indexfile = open(os.path.join('public', 'index.html'), 'rb').read()
+        indexfile = templatefile.replace(b"{{content}}", indexfile)
+        res.headers({'Content-Type': 'text/html; charset=utf-8'})
+        res.bytes(indexfile)
+        handler.request.sendall(res.to_data())
+        return
+    if(request.path=='/chat'):
+        templatefile = open(os.path.join('public', 'layout', 'layout.html'), 'rb').read()
+        chatfile = open(os.path.join('public', 'chat.html'), 'rb').read()
+        chatfile = templatefile.replace(b"{{content}}", chatfile)
+        res.bytes(chatfile)
+        res.headers({'Content-Type': 'text/html; charset=utf-8'})
+        handler.request.sendall(res.to_data())
+        return
     path = request.path.lstrip('/')
     path = path.split('/')
     file = open(os.path.join(*path),'rb').read()
@@ -30,7 +29,7 @@ def renderFile(request,handler):
     elif '.png' in request.path:
         head = {'Content-Type': 'image/png'}
     elif '.ico' in request.path:
-        head = {'Content-Type': 'image/vnd.microsoft.icon'}
+        head = {'Content-Type': 'image/x-icon'}
     elif '.gif' in request.path:
         head = {'Content-Type': 'image/gif'}
     elif '.webp' in request.path:
@@ -38,9 +37,9 @@ def renderFile(request,handler):
     elif '.html' in request.path:
         head = {'Content-Type': 'text/html; charset=utf-8'}
     elif '.js' in request.path:
-        head = {'Content-Type': 'text/javascript'}
+        head = {'Content-Type': 'text/javascript; charset=utf-8'}
     elif '.css' in request.path:
-        head = {'Content-Type': 'text/css'}
+        head = {'Content-Type': 'text/css; charset=utf-8'}
     elif '.txt' in request.path:
         head = {'Content-Type': 'text/plain; charset=utf-8'}
     else:

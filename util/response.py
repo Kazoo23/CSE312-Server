@@ -32,29 +32,30 @@ class Response:
         return self
 
     def json(self, data):
+        data = json.dumps(data).encode()
         self.headers({'Content-Type' : 'application/json'})
-        self.bdy = json.dumps(data).encode()
+        self.bdy = data
         return self
 
     def to_data(self):
         res = b'HTTP/1.1 ' + self.stat.encode()
         if 'Content-Type' not in self.head:
             self.headers({'Content-Type' : 'text/plain; charset=utf-8'})
+        self.head['Content-Length'] = str(len(self.bdy))
         for i in self.head:
             res += b'\r\n' + i.encode() + b': ' + self.head[i].encode()
         for cook in self.cook:
-            res += b'\r\nSet-Cookie: ' + cook.encode() + b'=' + self.cook[cook].encode()
-        if 'Content-Length' not in self.head:
-            res += b'\r\nContent-Length: ' + str(len(self.bdy)).encode()
+            res += b'\r\nSet-Cookie: ' + cook.encode() + b'=' + self.cook[cook].encode() + b'; HttpOnly'
         res += b'\r\n\r\n' + self.bdy
         return res
 
 
 def test1():
     res = Response()
-    res.text("hello")
+    res.text("hello its so nice to meet you")
     expected = b'HTTP/1.1 200 OK\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Length: 5\r\n\r\nhello'
     actual = res.to_data()
+    print(actual)
     #assert expected == actual
 def test2():
     res = Response()
